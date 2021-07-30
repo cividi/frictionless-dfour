@@ -72,7 +72,7 @@ def program_workspace(
         typer.secho(f"Found no dfour.yaml in {folder}.")
 
         if not noninteractive:
-            typer.promt(f"Create {folder}/dfour.yaml?")
+            typer.prompt(f"Create {folder}/dfour.yaml?")
 
         with open(f"{folder}/dfour.yaml", "w") as config_file:
             ym.dump(config_data, config_file)
