@@ -63,14 +63,27 @@ def program_workspace(
     with open(f"{folder}/dfour.yaml") as config_file:
         ws_config = ym.safe_load(config_file)
 
-    if ws_config:
-        config_data = ws_config[workspace]
+    if not ws_config:
+        config_data = {}
+        config_data[workspace] = dict(endpoint=endpoint, snapshots=[])
+
+        typer.secho(f"Found no dfour.yaml in {folder}.")
+
+        if not noninteractive:
+            typer.promt(f"Create {folder}/dfour.yaml?")
+
+        with open(f"{folder}/dfour.yaml", "w") as config_file:
+            ym.dump(config_data, config_file)
     else:
-        config_data = {"snapshots": []}
+        config_data = ws_config
 
-    endpoint = config_data["endpoint"] if "endpoint" in config_data.keys() else endpoint
+    endpoint = (
+        config_data[workspace]["endpoint"]
+        if "endpoint" in config_data[workspace].keys()
+        else endpoint
+    )
 
-    local_data = get_local_data(folder, config_data["snapshots"])
+    local_data = get_local_data(folder, config_data, workspace, noninteractive)
     remote_data = get_remote_data(endpoint, workspace)
 
     merged = local_data["snapshots"].copy()
@@ -187,8 +200,10 @@ def program_workspace(
 # Helpers
 
 
-def get_local_data(folder, config_data):
+def get_local_data(folder, config_data_raw, workspace, noninteractive):
     local_snaps = {"folder": folder, "snapshots": {}}
+
+    config_data = config_data_raw[workspace]["snapshots"]
 
     for snap_file in [
         f for f in os.listdir(folder) if not f.startswith(".") and f.endswith(".json")
@@ -205,11 +220,26 @@ def get_local_data(folder, config_data):
 
             if snap_name not in [k for k, v in config_data.items()]:
                 typer.secho(
-                    f"\"{f_data['name']}\" is not in {folder}/dfour.yaml for the workspace. Can't proceed.",
+                    f"\"{f_data['name']}\" is not in {folder}/dfour.yaml for the workspace.",
                     fg=typer.colors.RED,
-                    err=True,
                 )
-                raise typer.Abort()
+                if not noninteractive:
+                    topic = None
+                    bfsNumber = None
+                    while not topic:
+                        topic = typer.prompt(
+                            f"Whats the topic for {snap_name}? [e.g. Structure]",
+                        )
+                    while not bfsNumber:
+                        bfsNumber = typer.prompt(
+                            f"Whats the bfsNumber for {snap_name}? [e.g. 273]",
+                        )
+
+                    config_data[snap_name] = dict(topic=topic, bfsNumber=int(bfsNumber))
+                    config_data_raw[workspace]["snapshots"] = config_data
+
+                    with open(f"{folder}/dfour.yaml", "w") as config_file:
+                        ym.dump(config_data_raw, config_file)
 
             local_snap = {
                 "name": snap_name,
