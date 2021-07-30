@@ -1,0 +1,6 @@
+A14GY:
+  endpoint: https://stage.gemeindescan.ch
+  snapshots:
+    sample-perimeter:
+      topic: Test
+      bfsNumber: 230
