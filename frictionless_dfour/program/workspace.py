@@ -218,7 +218,10 @@ def get_local_data(folder, config_data_raw, workspace, noninteractive):
 
             snap_name = resolve_name(f_data)
 
-            if snap_name not in [k for k, v in config_data.items()]:
+            if (
+                type(config_data) == dict
+                and snap_name not in [k for k, v in config_data.items()]
+            ) or type(config_data) != dict:
                 typer.secho(
                     f"\"{f_data['name']}\" is not in {folder}/dfour.yaml for the workspace.",
                     fg=typer.colors.RED,
