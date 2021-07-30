@@ -27,8 +27,8 @@ release:
 
 test:
 	make lint
-	pytest --cov ${PACKAGE} --cov-report term-missing --cov-fail-under 70 --cov-report=xml
+	pytest --cov ${PACKAGE} --cov-report term-missing --cov-fail-under 25 --cov-report=xml
 
 test-ci:
 	make lint
-	pytest --cov ${PACKAGE} --cov-report term-missing --cov-fail-under 70 --ci
+	pytest --cov ${PACKAGE} --cov-report term-missing --cov-fail-under 25 --ci

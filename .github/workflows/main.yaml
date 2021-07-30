@@ -28,10 +28,17 @@ jobs:
       - name: Install dependencies
         run: make install
       - name: Prepare secrets
-        if: env.DFOUR_CONFIGURATION != null
-        run: echo $DFOUR_CONFIGURATION > .env
+        if: env.DFOUR_ENDPOINT != null
+        run: |-
+          echo DFOUR_ENDPOINT=$DFOUR_ENDPOINT > .env
+          echo DFOUR_USERNAME=$DFOUR_USERNAME >> .env
+          echo DFOUR_PASSWORD=$DFOUR_PASSWORD >> .env
+          echo DFOUR_WORKSPACE=$DFOUR_WORKSPACE >> .env
         env:
-          DFOUR_CONFIGURATION: ${{ secrets.DFOUR_CONFIGURATION }}
+          DFOUR_ENDPOINT: ${{ secrets.DFOUR_ENDPOINT }}
+          DFOUR_USERNAME: ${{ secrets.DFOUR_USERNAME }}
+          DFOUR_PASSWORD: ${{ secrets.DFOUR_PASSWORD }}
+          DFOUR_WORKSPACE: ${{ secrets.DFOUR_WORKSPACE }}
       - name: Test software
         run: make test-ci
       - name: Report coverage
@@ -48,10 +55,17 @@ jobs:
         with:
           python-version: 3.8
       - name: Prepare secrets
-        if: env.DFOUR_CONFIGURATION != null
-        run: echo $DFOUR_CONFIGURATION > .env
+        if: env.DFOUR_ENDPOINT != null
+        run: |-
+          echo DFOUR_ENDPOINT=$DFOUR_ENDPOINT > .env
+          echo DFOUR_USERNAME=$DFOUR_USERNAME >> .env
+          echo DFOUR_PASSWORD=$DFOUR_PASSWORD >> .env
+          echo DFOUR_WORKSPACE=$DFOUR_WORKSPACE >> .env
         env:
-          DFOUR_CONFIGURATION: ${{ secrets.DFOUR_CONFIGURATION }}
+          DFOUR_ENDPOINT: ${{ secrets.DFOUR_ENDPOINT }}
+          DFOUR_USERNAME: ${{ secrets.DFOUR_USERNAME }}
+          DFOUR_PASSWORD: ${{ secrets.DFOUR_PASSWORD }}
+          DFOUR_WORKSPACE: ${{ secrets.DFOUR_WORKSPACE }}
       - name: Install dependencies
         # https://stackoverflow.com/questions/9678408/cant-install-psycopg2-with-pip-in-virtualenv-on-mac-os-x-10-7
         run: LDFLAGS=`echo $(pg_config --ldflags)` make install
@@ -71,10 +85,17 @@ jobs:
       - name: Install dependencies
         run: make install
       - name: Prepare secrets
-        if: env.DFOUR_CONFIGURATION != null
-        run: echo $DFOUR_CONFIGURATION > .env
+        if: env.DFOUR_ENDPOINT != null
+        run: |-
+          echo DFOUR_ENDPOINT=$DFOUR_ENDPOINT > .env
+          echo DFOUR_USERNAME=$DFOUR_USERNAME >> .env
+          echo DFOUR_PASSWORD=$DFOUR_PASSWORD >> .env
+          echo DFOUR_WORKSPACE=$DFOUR_WORKSPACE >> .env
         env:
-          DFOUR_CONFIGURATION: ${{ secrets.DFOUR_CONFIGURATION }}
+          DFOUR_ENDPOINT: ${{ secrets.DFOUR_ENDPOINT }}
+          DFOUR_USERNAME: ${{ secrets.DFOUR_USERNAME }}
+          DFOUR_PASSWORD: ${{ secrets.DFOUR_PASSWORD }}
+          DFOUR_WORKSPACE: ${{ secrets.DFOUR_WORKSPACE }}
       - name: Test software
         run: make test
 
