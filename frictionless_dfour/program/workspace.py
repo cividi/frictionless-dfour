@@ -67,12 +67,12 @@ def program_workspace(
 
     else:
         config_data = {}
-        config_data[workspace] = dict(endpoint=endpoint, snapshots=[])
+        config_data[workspace] = dict(endpoint=endpoint, snapshots={})
 
         typer.secho(f"Found no dfour.yaml in {folder}.")
 
         if not noninteractive:
-            typer.prompt(f"Create {folder}/dfour.yaml?")
+            typer.confirm(f"Create {folder}/dfour.yaml?", abort=True)
 
         with open(f"{folder}/dfour.yaml", "w") as config_file:
             ym.dump(config_data, config_file)
