@@ -60,10 +60,12 @@ def program_workspace(
         password=password if password is not None else os.getenv("DFOUR_PASSWORD"),
     )
 
-    with open(f"{folder}/dfour.yaml") as config_file:
-        ws_config = ym.safe_load(config_file)
+    if os.path.exists(f"{folder}/dfour.yaml"):
+        with open(f"{folder}/dfour.yaml") as config_file:
+            ws_config = ym.safe_load(config_file)
+        config_data = ws_config
 
-    if not ws_config:
+    else:
         config_data = {}
         config_data[workspace] = dict(endpoint=endpoint, snapshots=[])
 
@@ -74,8 +76,6 @@ def program_workspace(
 
         with open(f"{folder}/dfour.yaml", "w") as config_file:
             ym.dump(config_data, config_file)
-    else:
-        config_data = ws_config
 
     endpoint = (
         config_data[workspace]["endpoint"]
@@ -367,7 +367,7 @@ def process_changes(changes, folder, endpoint, workspace, credentials):
             pkg = storage.read_package()
 
             with open(change["target"], "w") as output_file:
-                js.dump(pkg, output_file)
+                js.dump(pkg, output_file, indent=4)
                 with open(f"{folder}/dfour.yaml", "r") as config_read:
                     config_read = ym.safe_load(config_read)
                     config_read[workspace]["snapshots"][change["name"]] = dict(
