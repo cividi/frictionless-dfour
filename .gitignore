@@ -139,6 +139,7 @@ cython_debug/
 
 # tmp folder
 tmp/
+sample/
 
 # macOS
 .DS_Store

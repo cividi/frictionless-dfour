@@ -53,5 +53,5 @@ target = "https://sandbox.dfour.space"
 dialect = DfourDialect(snapshot="<SNAPSHOTHASH>", workspace="<WORKSPACEHASH>", credentials={"username":"<YOURUSER>","password":"<YOURPASSWORD>"})
 
 storage = system.create_storage("dfour", target, dialect=dialect)
-pkg = storage.read_package()
+storage.write_package(pkg.to_copy(), force=True)
 ```

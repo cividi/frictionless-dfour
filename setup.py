@@ -48,7 +48,7 @@ INSTALL_REQUIRES = [
     "dictdiffer",
     "tzlocal",
 ]
-README = read("Readme.md")
+README = read("README.md")
 VERSION = read(PACKAGE, "assets", "VERSION")
 PACKAGES = find_packages(exclude=["tests"])
 ENTRY_POINTS = {"console_scripts": ["dfour = frictionless_dfour.__main__:program"]}
