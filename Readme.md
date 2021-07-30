@@ -9,7 +9,7 @@ An extension to add [dfour](https://github.com/cividi/spatial-data-package-platf
 
 ## Guide
 
-### Load the package
+### Install the package
 
 #### Release version
 
@@ -30,6 +30,16 @@ cd frictionless-dfour
 make dev # or python3 -m pip install -e .
 ```
 
+## Command Line Usage
+
+```sh
+export DFOUR_USERNAME=your-dfour-username
+export DFOUR_PASSWORD=your-dfour-password
+dfour workspace dfour-workspace-hash path-to-local-folder-to-sync -e https://sandbox.dfour.space
+```
+
+## Python Usage
+
 ### Read from dfour
 
 ```python
@@ -37,7 +47,7 @@ from frictionless import system
 from pprint import pprint
 
 source = "https://sandbox.dfour.space"
-dialect = DfourDialect(snapshot="<SNAPSHOTHASH>", workspace="<WORKSPACEHASH>", credentials={"username":"<YOURUSER>","password":"<YOURPASSWORD>"})
+dialect = DfourDialect(snapshotHash="<SNAPSHOT-HASH>", username:"<YOUR-USER>", password: "<YOUR-PASSWORD>")
 
 storage = system.create_storage("dfour", source, dialect=dialect)
 pkg = storage.read_package()
@@ -50,7 +60,7 @@ from frictionless import system
 from pprint import pprint
 
 target = "https://sandbox.dfour.space"
-dialect = DfourDialect(snapshot="<SNAPSHOTHASH>", workspace="<WORKSPACEHASH>", credentials={"username":"<YOURUSER>","password":"<YOURPASSWORD>"})
+dialect = DfourDialect(workspaceHash:"<WORKSPACE-HASH>", username:"<YOUR-USER>", password: "<YOUR-PASSWORD>")
 
 storage = system.create_storage("dfour", target, dialect=dialect)
 storage.write_package(pkg.to_copy(), force=True)
