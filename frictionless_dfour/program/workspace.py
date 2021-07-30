@@ -356,6 +356,8 @@ def get_remote_data(endpoint, workspace):
 
 
 def get_endpoint_url(endpoint):
+    if type(endpoint) != str:
+        endpoint = endpoint[0]
     return f"{endpoint}/graphql/"
 
 
