@@ -60,7 +60,7 @@ def program_workspace(
         password=password if password is not None else os.getenv("DFOUR_PASSWORD"),
     )
 
-    endpoint = (endpoint if endpoint is not None else os.getenv("DFOUR_ENDPOINT"),)
+    endpoint = endpoint if endpoint is not None else os.getenv("DFOUR_ENDPOINT")
 
     if os.path.exists(f"{folder}/dfour.yaml"):
         with open(f"{folder}/dfour.yaml") as config_file:
@@ -356,8 +356,6 @@ def get_remote_data(endpoint, workspace):
 
 
 def get_endpoint_url(endpoint):
-    if type(endpoint) != str:
-        endpoint = endpoint[0]
     return f"{endpoint}/graphql/"
 
 
