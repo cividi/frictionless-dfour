@@ -1,7 +1,8 @@
 .PHONY: all install lint release test test-ci
 
-PACKAGE := $(shell grep '^name =' setup.cfg | cut -d '=' -f2 | sed 's/ //g')
+PACKAGE := $(shell grep '^PACKAGE =' setup.py | cut -d '"' -f2)
 VERSION := $(shell head -n 1 $(PACKAGE)/assets/VERSION)
+LEAD := $(shell head -n 1 LEAD.md)
 
 install:
 	pip install --upgrade -e .[dev]
@@ -26,7 +27,7 @@ release:
 
 test:
 	make lint
-	# pytest --cov ${PACKAGE} --cov-report term-missing --cov-fail-under 70 --cov-report=xml
+	pytest --cov ${PACKAGE} --cov-report term-missing --cov-fail-under 70 --cov-report=xml
 
 test-ci:
 	make lint

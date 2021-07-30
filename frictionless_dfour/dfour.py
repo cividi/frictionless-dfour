@@ -19,6 +19,7 @@ from frictionless.exception import FrictionlessException
 
 # Plugin
 
+
 class DfourPlugin(Plugin):
     """Plugin for dfour
     API      | Usage
@@ -40,6 +41,7 @@ class DfourPlugin(Plugin):
 
 # Dialect
 
+
 class DfourDialect(Dialect):
     """Dfour dialect representation
     API      | Usage
@@ -54,7 +56,17 @@ class DfourDialect(Dialect):
         FrictionlessException: raise any error that occurs during the process
     """
 
-    def __init__(self, descriptor=None, *, snapshotHash=None, workspaceHash=None, username=None, password=None, snapshotTopic=None, bfsMunicipality=None):
+    def __init__(
+        self,
+        descriptor=None,
+        *,
+        snapshotHash=None,
+        workspaceHash=None,
+        username=None,
+        password=None,
+        snapshotTopic=None,
+        bfsMunicipality=None,
+    ):
         self.setinitial("snapshotHash", snapshotHash)
         self.setinitial("workspaceHash", workspaceHash)
         self.setinitial("username", username)
@@ -106,6 +118,7 @@ class DfourDialect(Dialect):
 
 # Storage
 
+
 class DfourStorage(Storage):
     """Dfour storage implementation
     Parameters:
@@ -150,9 +163,7 @@ class DfourStorage(Storage):
                 """
             )
 
-            params = {
-                "wshash": self.__dfour_id(self.__workspaceHash, False)
-            }
+            params = {"wshash": self.__dfour_id(self.__workspaceHash, False)}
 
             results = self.__make_dfour_request(query, params)
             if results["workspace"]["snapshots"]:
@@ -173,9 +184,7 @@ class DfourStorage(Storage):
             """
         )
 
-        params = {
-            "hash": self.__dfour_id(self.__snapshotHash)
-        }
+        params = {"hash": self.__dfour_id(self.__snapshotHash)}
 
         result = self.__make_dfour_request(query, params)
 
@@ -185,7 +194,9 @@ class DfourStorage(Storage):
             #     if res["mediatype"] == "application/geo+json":
             return pkg
 
-        note = f'Snapshot with hash "{self.__snapshotHash}" on {self.__url} doesn\'t exist'
+        note = (
+            f'Snapshot with hash "{self.__snapshotHash}" on {self.__url} doesn\'t exist'
+        )
         raise FrictionlessException(errors.StorageError(note=note))
 
     def read_resource(self, name):
@@ -199,11 +210,18 @@ class DfourStorage(Storage):
             self.__dfour_login()
             if self.__sessionid:
                 # Check existing
-                if not self.__snapshotHash and package.title in self.__workspaceSnapshots:
-                    # Snapshot already exists
-                    pk = [item["pk"] for item in list(self) if item["title"] == package.title][0]
-                elif self.__snapshotHash:
+                if self.__snapshotHash:
                     pk = self.__snapshotHash
+                elif (
+                    not self.__snapshotHash
+                    and package.title in self.__workspaceSnapshots
+                ):
+                    # Snapshot already exists
+                    pk = [
+                        item["pk"]
+                        for item in list(self)
+                        if item["title"] == package.title
+                    ][0]
                 else:
                     if self.__snapshotTopic and self.__bfsMuniciaplity:
                         query = gql(
@@ -223,11 +241,16 @@ class DfourStorage(Storage):
                                 "title": package.title,
                                 "topic": self.__snapshotTopic,
                                 "bfsNumber": self.__bfsMuniciaplity,
-                                "wshash": self.__dfour_id(self.__workspaceHash)
+                                "wshash": self.__dfour_id(self.__workspaceHash),
                             }
                         }
 
-                        result = self.__make_dfour_request(query, params, self.__dfour_session.cookies, self.__dfour_session.headers)
+                        result = self.__make_dfour_request(
+                            query,
+                            params,
+                            self.__dfour_session.cookies,
+                            self.__dfour_session.headers,
+                        )
 
                         if result["snapshotmutation"]["snapshot"]["pk"]:
                             pk = result["snapshotmutation"]["snapshot"]["pk"]
@@ -246,9 +269,7 @@ class DfourStorage(Storage):
 
     def __make_dfour_request(self, query, params, cookies=None, headers=None):
         transport = RequestsHTTPTransport(
-            url=self.__endpoint,
-            headers=headers,
-            cookies=cookies
+            url=self.__endpoint, headers=headers, cookies=cookies
         )
         client = Client(
             transport=transport,
@@ -260,35 +281,39 @@ class DfourStorage(Storage):
         uploadUrl = f"{self.__url}/api/v1/snapshots/{pk}/"
 
         files = [
-            ('data_file', (f'{pk}-{package.name}.json', json.dumps(package), 'application/json'))
+            (
+                "data_file",
+                (f"{pk}-{package.name}.json", json.dumps(package), "application/json"),
+            )
         ]
         headers = {
-            'X-CSRFToken': self.__get_token(),  # CORS-Token from above
+            "X-CSRFToken": self.__get_token(),  # CORS-Token from above
         }
 
         self.__dfour_session.request(
-            "PATCH", uploadUrl, headers=headers, files=files)  # submit the PATCH request
+            "PATCH", uploadUrl, headers=headers, files=files
+        )  # submit the PATCH request
         # note = f'upload failed. {r.text}'
         # raise FrictionlessException(errors.StorageError(note=note))
 
     # Internal
 
     def __get_token(self):
-        return self.__dfour_session.cookies['csrftoken']
+        return self.__dfour_session.cookies["csrftoken"]
 
     def __dfour_id(self, hash, snapshot=True):
         if snapshot:
             prefix = "SnapshotNode"
         else:
             prefix = "WorkspaceNode"
-        return base64.b64encode(f'{prefix}:{hash}'.encode('ascii')).decode('ascii')
+        return base64.b64encode(f"{prefix}:{hash}".encode("ascii")).decode("ascii")
 
     def __dfour_session(self):
         self.__dfour_session = requests.session()
 
     def __dfour_login(self):
         self.__dfour_session()
-        self.__dfour_session.get(f'{self.__url}/account/login/')
+        self.__dfour_session.get(f"{self.__url}/account/login/")
         if self.__username and self.__password and self.__get_token():
             if self.__username.startswith("env:"):
                 username = os.environ.get(self.__username[4:])
@@ -301,22 +326,28 @@ class DfourStorage(Storage):
                 password = self.__password
 
             headers = {
-                'Cookie': '; '.join([f'csrftoken={self.__get_token()}']),  # make sure the CORS-Token cookie is set
-                'Content-Type': 'application/x-www-form-urlencoded',  # set the Content Type to form-urlencoded
-                'Referer': f'{self.__url}/account/login/'
+                "Cookie": "; ".join(
+                    [f"csrftoken={self.__get_token()}"]
+                ),  # make sure the CORS-Token cookie is set
+                "Content-Type": "application/x-www-form-urlencoded",  # set the Content Type to form-urlencoded
+                "Referer": f"{self.__url}/account/login/",
             }
             payload = {
-                'csrfmiddlewaretoken': self.__get_token(),  # set the the CORS-Token
-                'username': username,
-                'password': password,
+                "csrfmiddlewaretoken": self.__get_token(),  # set the the CORS-Token
+                "username": username,
+                "password": password,
             }
 
-            payload = urllib.parse.urlencode(payload)  # encode payload as www-form-urlencoded
+            payload = urllib.parse.urlencode(
+                payload
+            )  # encode payload as www-form-urlencoded
 
-            self.__dfour_session.post(f'{self.__url}/account/login/', data=payload, headers=headers)
+            self.__dfour_session.post(
+                f"{self.__url}/account/login/", data=payload, headers=headers
+            )
 
             if "sessionid" in self.__dfour_session.cookies.keys():
-                self.__sessionid = self.__dfour_session.cookies['sessionid']
+                self.__sessionid = self.__dfour_session.cookies["sessionid"]
             else:
-                note = f'Couldn\'t obtain {self.__url} session. Current cookies: {self.__dfour_session.cookies}, {self.__get_token()} {username} {password}'
+                note = f"Couldn't obtain {self.__url} session. Current cookies: {self.__dfour_session.cookies}, {self.__get_token()} {username} {password}"
                 raise FrictionlessException(errors.StorageError(note=note))
