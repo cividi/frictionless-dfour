@@ -47,9 +47,9 @@ def program_workspace(
     username: str = common.username,
     password: str = common.password,
     endpoint: str = common.endpoint,
-    yaml: bool = common.yaml,
-    json: bool = common.json,
-    csv: bool = common.csv,
+    # yaml: bool = common.yaml,
+    # json: bool = common.json,
+    # csv: bool = common.csv,
 ):
     """
     Show workspace overview.
@@ -59,6 +59,8 @@ def program_workspace(
         username=username if username is not None else os.getenv("DFOUR_USERNAME"),
         password=password if password is not None else os.getenv("DFOUR_PASSWORD"),
     )
+
+    endpoint = (endpoint if endpoint is not None else os.getenv("DFOUR_ENDPOINT"),)
 
     if os.path.exists(f"{folder}/dfour.yaml"):
         with open(f"{folder}/dfour.yaml") as config_file:
@@ -183,7 +185,7 @@ def program_workspace(
 
     # snaps = compile_snapshots(endpoint, workspace, data,folder)
 
-    if not yaml and not json and not csv and len(changes) > 0:
+    if len(changes) > 0:  # not yaml and not json and not csv and
         typer.secho(f"{len(merged)} snapshot(s) found. Changes:")
         typer.secho(js.dumps(changes, cls=DateTimeEncoder, indent=4))
 
