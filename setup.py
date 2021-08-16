@@ -47,6 +47,7 @@ INSTALL_REQUIRES = [
     "frictionless",
     "dictdiffer",
     "tzlocal",
+    "pytz",
 ]
 README = read("README.md")
 VERSION = read(PACKAGE, "assets", "VERSION")
