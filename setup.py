@@ -46,8 +46,7 @@ INSTALL_REQUIRES = [
     "gql",
     "frictionless",
     "dictdiffer",
-    "tzlocal",
-    "pytz",
+    "tzlocal==2.1"
 ]
 README = read("README.md")
 VERSION = read(PACKAGE, "assets", "VERSION")
