@@ -34,10 +34,12 @@ jobs:
           echo DFOUR_USERNAME=$DFOUR_USERNAME >> .env
           echo DFOUR_PASSWORD=$DFOUR_PASSWORD >> .env
           echo DFOUR_WORKSPACE=$DFOUR_WORKSPACE >> .env
+          echo DFOUR_SNAPSHOT=$DFOUR_SNAPSHOT >> .env
         env:
           DFOUR_ENDPOINT: ${{ secrets.DFOUR_ENDPOINT }}
           DFOUR_USERNAME: ${{ secrets.DFOUR_USERNAME }}
           DFOUR_PASSWORD: ${{ secrets.DFOUR_PASSWORD }}
+          DFOUR_SNAPSHOT: ${{ secrets.DFOUR_SNAPSHOT }}
           DFOUR_WORKSPACE: ${{ secrets.DFOUR_WORKSPACE }}
       - name: Test software
         run: make test-ci
@@ -61,10 +63,12 @@ jobs:
           echo DFOUR_USERNAME=$DFOUR_USERNAME >> .env
           echo DFOUR_PASSWORD=$DFOUR_PASSWORD >> .env
           echo DFOUR_WORKSPACE=$DFOUR_WORKSPACE >> .env
+          echo DFOUR_SNAPSHOT=$DFOUR_SNAPSHOT >> .env
         env:
           DFOUR_ENDPOINT: ${{ secrets.DFOUR_ENDPOINT }}
           DFOUR_USERNAME: ${{ secrets.DFOUR_USERNAME }}
           DFOUR_PASSWORD: ${{ secrets.DFOUR_PASSWORD }}
+          DFOUR_SNAPSHOT: ${{ secrets.DFOUR_SNAPSHOT }}
           DFOUR_WORKSPACE: ${{ secrets.DFOUR_WORKSPACE }}
       - name: Install dependencies
         # https://stackoverflow.com/questions/9678408/cant-install-psycopg2-with-pip-in-virtualenv-on-mac-os-x-10-7
@@ -91,10 +95,12 @@ jobs:
           echo DFOUR_USERNAME=$DFOUR_USERNAME >> .env
           echo DFOUR_PASSWORD=$DFOUR_PASSWORD >> .env
           echo DFOUR_WORKSPACE=$DFOUR_WORKSPACE >> .env
+          echo DFOUR_SNAPSHOT=$DFOUR_SNAPSHOT >> .env
         env:
           DFOUR_ENDPOINT: ${{ secrets.DFOUR_ENDPOINT }}
           DFOUR_USERNAME: ${{ secrets.DFOUR_USERNAME }}
           DFOUR_PASSWORD: ${{ secrets.DFOUR_PASSWORD }}
+          DFOUR_SNAPSHOT: ${{ secrets.DFOUR_SNAPSHOT }}
           DFOUR_WORKSPACE: ${{ secrets.DFOUR_WORKSPACE }}
       - name: Test software
         run: make test
